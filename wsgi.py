@@ -35,11 +35,11 @@ def application(environ, start_response):
 <body>'''
 
         try:
-          command = os.environ["OPENSHIFT_BUILD_DEPENDENCIES_DIR"]+"/ffmpeg"
+          command = os.environ["OPENSHIFT_BUILD_DEPENDENCIES_DIR"]+"ffmpeg"
           response_body += command
           response_body += subprocess.check_call(command)
-        except:
-          response_body += "Could not run ffmpeg cleanly."
+        except Exception, e:
+          response_body += str(e.output)
 
 
         response_body +='''
