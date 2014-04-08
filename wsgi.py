@@ -37,7 +37,7 @@ def application(environ, start_response):
         try:
           response_body += subprocess.check_call(["{$OPENSHIFT_BUILD_DEPENDENCIES_DIR}/ffmpeg"])
         except:
-          response_body += "Could not run ffmpeg cleanly"
+          response_body += "Could not run ffmpeg cleanly."
 
 
         response_body +='''
