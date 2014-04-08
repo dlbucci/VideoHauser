@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import os
+import os, cgi
 
 virtenv = os.environ['OPENSHIFT_PYTHON_DIR'] + '/virtenv/'
 virtualenv = os.path.join(virtenv, 'bin/activate_this.py')
@@ -24,7 +24,24 @@ def application(environ, start_response):
                     for key, value in sorted(environ.items())]
         response_body = '\n'.join(response_body)
     elif environ['PATH_INFO'] == '/upload':
-      response_body = "uploading?"
+      form = cgi.FieldStorage(fp=environ['wsgi.input'], environ=environ, keep_blank_values=True)
+      try:
+        fileitem = form['file']
+      except KeyError:
+        fileitem = None
+      
+      if fileitem and fileitem.file:
+        fn = os.path.basename(fileitem.filename)
+        with open(fn, 'wb') as f:
+          data = fileitem.file.read(1024)
+          while data:
+            f.write(data)
+            data = fileitem.file.read(1024)
+
+          response_body = 'The file "' + fn + '" was uploaded successfully'
+      else :
+        response_body = 'please upload a file.'
+
     else:
         ctype = 'text/html'
         response_body = '''<!doctype html>
