@@ -25,6 +25,9 @@ def application(environ, start_response):
         response_body = '\n'.join(response_body)
     elif environ['PATH_INFO'] == '/upload':
       form = cgi.FieldStorage(fp=environ['wsgi.input'], environ=environ, keep_blank_values=True)
+
+      response_body = str(form)      
+
       try:
         fileitem = form['file']
       except KeyError:
@@ -38,9 +41,9 @@ def application(environ, start_response):
             f.write(data)
             data = fileitem.file.read(1024)
 
-          response_body = 'The file "' + fn + '" was uploaded successfully'
+          response_body += 'The file "' + fn + '" was uploaded successfully'
       else :
-        response_body = 'please upload a file.'
+        response_body += 'please upload a file.'
 
     else:
         ctype = 'text/html'
