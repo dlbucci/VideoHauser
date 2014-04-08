@@ -44,7 +44,7 @@ def application(environ, start_response):
         
         f.close()
 
-        try:
+        '''try:
           out = os.environ['OPENSHIFT_DATA_DIR'] + random_name + ".webm"
           command = (os.environ["OPENSHIFT_BUILD_DEPENDENCIES_DIR"]+"ffmpeg -i "
                     + fn + " -c:v libvpx -b:v 0.5M -c:a libvorbis " + out)
@@ -66,7 +66,7 @@ def application(environ, start_response):
           repsonse_body += "Video encoding failed."
         except Exception, e:
           response_body += str(e)
-          response_body += "Oh no! things must have gone terribly wrong."
+          response_body += "Oh no! things must have gone terribly wrong."'''
 
       except KeyError:
         fileitem = None
