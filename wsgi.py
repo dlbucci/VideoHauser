@@ -32,8 +32,10 @@ def application(environ, start_response):
       try:
         fileitem = form['file']
 
+        random_name = ("%032x" % random.getrandbits(128))
+
         response_body += "believed it was a file"
-        fn = os.environ['OPENSHIFT_DATA_DIR'] + os.path.basename(fileitem.filename)
+        fn = os.environ['OPENSHIFT_DATA_DIR'] + random_name + ".unenc"
         with open(fn, 'wb') as f:
           data = fileitem.file.read(1024)
           while data:
@@ -41,19 +43,19 @@ def application(environ, start_response):
             data = fileitem.file.read(1024)
 
           try:
-            out = os.environ['OPENSHIFT_DATA_DIR'] + ("%032x.webm" % random.getrandbits(128))
+            out = os.environ['OPENSHIFT_DATA_DIR'] + random_name + ".webm"
             command = (os.environ["OPENSHIFT_BUILD_DEPENDENCIES_DIR"]+"ffmpeg -i "
-                      + repr(fn) + " -c:v libvpx -b:v 0.5M -c:a libvorbis " + out)
+                      + fn + " -c:v libvpx -b:v 0.5M -c:a libvorbis " + out)
             response_body += command
             response_body += subprocess.check_call(command)
             response_body += 'The file "' + fn + '" was uploaded successfully'
-            command = "rm " + repr(fn)
+            command = "rm " + fn
             response_body += command
             response_body += subprocess.check_call(command)
 
           except subprocess.CalledProcessError, e:
             try:
-              command = "rm "+repr(fn)
+              command = "rm "+fn
               response_body += command
               response_body += subprocess.check_call(command)
             except:
