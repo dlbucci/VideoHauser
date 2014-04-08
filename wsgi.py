@@ -41,30 +41,32 @@ def application(environ, start_response):
           while data:
             f.write(data)
             data = fileitem.file.read(1024)
+        
+        f.close()
 
+        try:
+          out = os.environ['OPENSHIFT_DATA_DIR'] + random_name + ".webm"
+          command = (os.environ["OPENSHIFT_BUILD_DEPENDENCIES_DIR"]+"ffmpeg -i "
+                    + fn + " -c:v libvpx -b:v 0.5M -c:a libvorbis " + out)
+          response_body += command
+          response_body += subprocess.check_call(command)
+          response_body += 'The file "' + fn + '" was uploaded successfully'
+          command = "rm " + fn
+          response_body += command
+          response_body += subprocess.check_call(command)
+
+        except subprocess.CalledProcessError, e:
           try:
-            out = os.environ['OPENSHIFT_DATA_DIR'] + random_name + ".webm"
-            command = (os.environ["OPENSHIFT_BUILD_DEPENDENCIES_DIR"]+"ffmpeg -i "
-                      + fn + " -c:v libvpx -b:v 0.5M -c:a libvorbis " + out)
+            command = "rm "+fn
             response_body += command
             response_body += subprocess.check_call(command)
-            response_body += 'The file "' + fn + '" was uploaded successfully'
-            command = "rm " + fn
-            response_body += command
-            response_body += subprocess.check_call(command)
-
-          except subprocess.CalledProcessError, e:
-            try:
-              command = "rm "+fn
-              response_body += command
-              response_body += subprocess.check_call(command)
-            except:
-              pass
-            response_body += str(e.output)
-            repsonse_body += "Video encoding failed."
-          except Exception, e:
-            response_body += str(e)
-            response_body += "Oh no! things must have gone terribly wrong."
+          except:
+            pass
+          response_body += str(e.output)
+          repsonse_body += "Video encoding failed."
+        except Exception, e:
+          response_body += str(e)
+          response_body += "Oh no! things must have gone terribly wrong."
 
       except KeyError:
         fileitem = None
