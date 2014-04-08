@@ -30,10 +30,13 @@ def application(environ, start_response):
 
       try:
         fileitem = form['file']
+        response_body += "found file"
       except KeyError:
         fileitem = None
+        response_body += "didnt find file"
       
       if fileitem and fileitem.file:
+        response_body += "believed it was a file"
         fn = os.path.basename(fileitem.filename)
         with open(fn, 'wb') as f:
           data = fileitem.file.read(1024)
@@ -43,6 +46,7 @@ def application(environ, start_response):
 
           response_body += 'The file "' + fn + '" was uploaded successfully'
       else :
+        response_body += str(fileitem) + str(fileitem.file)
         response_body += 'please upload a file.'
 
     else:
