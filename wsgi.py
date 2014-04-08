@@ -32,7 +32,7 @@ def application(environ, start_response):
         fileitem = form['file']
 
         response_body += "believed it was a file"
-        fn = os.path.basename(fileitem.filename)
+        fn = os.environ['OPENSHIFT_DATA_DIR'] + os.path.basename(fileitem.filename)
         with open(fn, 'wb') as f:
           data = fileitem.file.read(1024)
           while data:
