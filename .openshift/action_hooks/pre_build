@@ -5,4 +5,5 @@ cd $OPENSHIFT_BUILD_DEPENDENCIES_DIR
 if ! (ls | grep ffmpeg); then
   wget http://ffmpeg.gusari.org/static/64bit/ffmpeg.static.64bit.latest.tar.gz
   tar xvf ffmpeg.static.64bit.latest.tar.gz
+  rm ffmpeg.static.64bit.latest.tar.gz
 fi
