@@ -53,7 +53,7 @@ def application(environ, start_response):
 </head>
 <body>
 Welcome to Video-Hauser
-<form action="env" method="post"
+<form action="upload" method="post"
 enctype="multipart/form-data">
 <label for="file">Video to upload:</label>
 <input type="file" name="file" id="file"><br>
