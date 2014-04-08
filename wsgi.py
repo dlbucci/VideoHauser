@@ -23,19 +23,14 @@ def application(environ, start_response):
         response_body = ['%s: %s' % (key, value)
                     for key, value in sorted(environ.items())]
         response_body = '\n'.join(response_body)
-    elif environ['PATH_INFO'] == '/upload':
+    elif environ['PATH_INFO'] == '/upload' && environ['REQUEST_METHOD'] == 'POST':
       form = cgi.FieldStorage(fp=environ['wsgi.input'], environ=environ, keep_blank_values=True)
 
       response_body = str(form)      
 
       try:
         fileitem = form['file']
-        response_body += "found file"
-      except KeyError:
-        fileitem = None
-        response_body += "didnt find file"
-      
-      if fileitem and fileitem.file:
+
         response_body += "believed it was a file"
         fn = os.path.basename(fileitem.filename)
         with open(fn, 'wb') as f:
@@ -45,9 +40,9 @@ def application(environ, start_response):
             data = fileitem.file.read(1024)
 
           response_body += 'The file "' + fn + '" was uploaded successfully'
-      else :
-        response_body += str(fileitem) + str(fileitem.file)
-        response_body += 'please upload a file.'
+      except KeyError:
+        fileitem = None
+        response_body += "Please upload a valid file"
 
     else:
         ctype = 'text/html'
