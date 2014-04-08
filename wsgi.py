@@ -12,6 +12,8 @@ except IOError:
 # line, it's possible required libraries won't be in your searchable path
 #
 
+import subprocess
+
 def application(environ, start_response):
 
     ctype = 'text/plain'
@@ -30,8 +32,15 @@ def application(environ, start_response):
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <title>Welcome to VideoHauser</title>
 </head>
-<body>
-  Welcome to VideoHauser.  A simple video sharing website.
+<body>'''
+
+        try:
+          response_body += subprocess.check_call(["{$OPENSHIFT_BUILD_DEPENDENCIES_DIR}/ffmpeg"])
+        except:
+          response_body += "Could not run ffmpeg cleanly"
+
+
+        response_body +='''
 </body>
 </html>'''
 

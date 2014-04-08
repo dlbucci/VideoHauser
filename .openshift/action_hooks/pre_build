@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# Download and untar a 64bit ffmpeg binary.
+cd $OPENSHIFT_BUILD_DEPENDENCIES_DIR
+wget http://ffmpeg.gusari.org/static/64bit/ffmpeg.static.64bit.latest.tar.gz
+tar xvf ffmpeg.static.64bit.latest.tar.gz
