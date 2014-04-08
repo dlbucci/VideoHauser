@@ -23,6 +23,8 @@ def application(environ, start_response):
         response_body = ['%s: %s' % (key, value)
                     for key, value in sorted(environ.items())]
         response_body = '\n'.join(response_body)
+    elif environ['PATH_INFO'] == '/upload':
+      response_body = "uploading?"
     else:
         ctype = 'text/html'
         response_body = '''<!doctype html>
@@ -32,9 +34,18 @@ def application(environ, start_response):
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <title>Welcome to VideoHauser</title>
 </head>
-<body>'''
-
-        try:
+<body>
+Welcome to Video-Hauser
+<form action="upload" method="post"
+enctype="multipart/form-data">
+<label for="file">Video to upload:</label>
+<input type="file" name="file" id="file"><br>
+<input type="submit" name="submit" value="Submit">
+</form>
+</body>
+</html>'''
+        
+    '''try:
           command = os.environ["OPENSHIFT_BUILD_DEPENDENCIES_DIR"]+"ffmpeg"
           response_body += command
           response_body += subprocess.check_call(command)
@@ -43,8 +54,6 @@ def application(environ, start_response):
 
 
         response_body +='''
-</body>
-</html>'''
 
     status = '200 OK'
     response_headers = [('Content-Type', ctype), ('Content-Length', str(len(response_body)))]
