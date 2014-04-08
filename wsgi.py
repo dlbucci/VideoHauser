@@ -51,7 +51,7 @@ def application(environ, start_response):
             response_body += command
             response_body += subprocess.check_call(command)
 
-          except Exception, e:
+          except subprocess.CalledProcessError, e:
             try:
               command = "rm "+fn
               response_body += command
@@ -60,6 +60,8 @@ def application(environ, start_response):
               pass
             response_body += str(e.output)
             repsonse_body += "Video encoding failed."
+          except:
+            response_body += "Oh no! things must have gone terribly wrong."
 
       except KeyError:
         fileitem = None
