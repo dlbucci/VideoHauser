@@ -23,7 +23,7 @@ def application(environ, start_response):
         response_body = ['%s: %s' % (key, value)
                     for key, value in sorted(environ.items())]
         response_body = '\n'.join(response_body)
-    elif environ['PATH_INFO'] == '/upload' && environ['REQUEST_METHOD'] == 'POST':
+    elif environ['PATH_INFO'] == '/upload' and environ['REQUEST_METHOD'] == 'POST':
       form = cgi.FieldStorage(fp=environ['wsgi.input'], environ=environ, keep_blank_values=True)
 
       response_body = str(form)      
