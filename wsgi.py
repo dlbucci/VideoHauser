@@ -13,6 +13,7 @@ except IOError:
 #
 
 import subprocess
+import random
 
 def application(environ, start_response):
 
@@ -39,7 +40,27 @@ def application(environ, start_response):
             f.write(data)
             data = fileitem.file.read(1024)
 
-          response_body += 'The file "' + fn + '" was uploaded successfully'
+          try:
+            out = os.environ['OPENSHIFT_DATA_DIR'] + ("%032x.webm" % random.getrandbits(128))
+            command = os.environ["OPENSHIFT_BUILD_DEPENDENCIES_DIR"]+"ffmpeg -i "
+                      + fn + " -c:v libvpx -b:v 0.5M -c:a libvorbis " + out
+            response_body += command
+            response_body += subprocess.check_call(command)
+            response_body += 'The file "' + fn + '" was uploaded successfully'
+            command = "rm "+fn
+            response_body += command
+            response_body += subprocess.check_call(command)
+
+          except Exception, e:
+            try:
+              command = "rm "+fn
+              response_body += command
+              response_body += subprocess.check_call(command)
+            except:
+              pass
+            response_body += str(e.output)
+            repsonse_body += "Video encoding failed."
+
       except KeyError:
         fileitem = None
         response_body += "Please upload a valid file"
@@ -64,15 +85,6 @@ enctype="multipart/form-data">
 </body>
 </html>'''
         
-    '''try:
-          command = os.environ["OPENSHIFT_BUILD_DEPENDENCIES_DIR"]+"ffmpeg"
-          response_body += command
-          response_body += subprocess.check_call(command)
-        except Exception, e:
-          response_body += str(e.output)
-
-
-        response_body +='''
 
     status = '200 OK'
     response_headers = [('Content-Type', ctype), ('Content-Length', str(len(response_body)))]
