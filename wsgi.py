@@ -60,7 +60,8 @@ def application(environ, start_response):
               pass
             response_body += str(e.output)
             repsonse_body += "Video encoding failed."
-          except:
+          except Exception, e:
+            print e
             response_body += "Oh no! things must have gone terribly wrong."
 
       except KeyError:
