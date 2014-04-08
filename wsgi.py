@@ -43,17 +43,17 @@ def application(environ, start_response):
           try:
             out = os.environ['OPENSHIFT_DATA_DIR'] + ("%032x.webm" % random.getrandbits(128))
             command = (os.environ["OPENSHIFT_BUILD_DEPENDENCIES_DIR"]+"ffmpeg -i "
-                      + fn + " -c:v libvpx -b:v 0.5M -c:a libvorbis " + out)
+                      + repr(fn) + " -c:v libvpx -b:v 0.5M -c:a libvorbis " + out)
             response_body += command
             response_body += subprocess.check_call(command)
             response_body += 'The file "' + fn + '" was uploaded successfully'
-            command = "rm " + fn
+            command = "rm " + repr(fn)
             response_body += command
             response_body += subprocess.check_call(command)
 
           except subprocess.CalledProcessError, e:
             try:
-              command = "rm "+fn
+              command = "rm "+repr(fn)
               response_body += command
               response_body += subprocess.check_call(command)
             except:
