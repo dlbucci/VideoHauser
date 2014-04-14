@@ -7,3 +7,6 @@ if ! (ls | grep ffmpeg); then
   tar xvf ffmpeg.static.64bit.latest.tar.gz
   rm ffmpeg.static.64bit.latest.tar.gz
 fi
+
+# install bottle for routing and templates
+pip install bottle
