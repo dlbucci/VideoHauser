@@ -26,7 +26,8 @@ def index():
   
 @route("/video/<id>")
 def video(id):
-    return template('video', video_path="test.mp4")
+    url = "/media/%s.mp4" % str(id)
+    return template('video', video_path=url)
 
 @route("/health")
 def health():
@@ -54,11 +55,12 @@ def upload_video():
 
     save_path = os.environ.get("OPENSHIFT_DATA_DIR")
     if save_path == None:
-        save_path = 'videos'
+        save_path = 'videos/'
 
-    upload.filename = "%s.unenc" % random_name
+    upload.filename = "%s.mp4" % random_name
     upload.save(save_path) # appends upload.filename automatically
-    redirect("/video/1")
+    url = "/video/%s" % random_name
+    redirect(url)
 
 #
 # this route serves static JS files
@@ -70,6 +72,14 @@ def callback(path):
         return static_file(path, root=os.path.join(repo_dir, "scripts"))
     else:
         return static_file(path, root="./scripts")
+
+@route("/media/<path:path>")
+def callback(path):
+    repo_dir = os.environ.get("OPENSHIFT_REPO_DIR")
+    if (repo_dir):
+        return static_file(path, root=os.path.join(repo_dir, "videos"), mimetype='video/mp4')
+    else:
+        return static_file(path, root="./videos")
     
 #
 # Below for testing only
@@ -82,3 +92,4 @@ else:
     from bottle import TEMPLATE_PATH
     TEMPLATE_PATH.append(os.path.join(os.environ.get("OPENSHIFT_REPO_DIR"), "templates/"))
     application = default_app()
+
