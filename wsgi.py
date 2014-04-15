@@ -18,11 +18,15 @@ except:
 import subprocess
 import random
 
-from bottle import default_app, request, route, template
+from bottle import default_app, redirect, request, route, static_file, template
 
 @route("/")
 def index():
     return template('index')
+  
+@route("/video/<id>")
+def video(id):
+    return template('video', video_path="test.mp4")
 
 @route("/health")
 def health():
@@ -39,6 +43,7 @@ def env():
 def upload_video():
     upload = request.files.get('video')
     if upload == None:
+        redirect("/")
         return "None upload"
 
     random_name = ("%032x" % random.getrandbits(128))
@@ -53,8 +58,19 @@ def upload_video():
 
     upload.filename = "%s.unenc" % random_name
     upload.save(save_path) # appends upload.filename automatically
-    return "OK"
+    redirect("/video/1")
 
+#
+# this route serves static JS files
+#
+@route("/scripts/<path:path>")
+def callback(path):
+    repo_dir = os.environ.get("OPENSHIFT_REPO_DIR")
+    if (repo_dir):
+        return static_file(path, root=os.path.join(repo_dir, "scripts"))
+    else:
+        return static_file(path, root="./scripts")
+    
 #
 # Below for testing only
 #

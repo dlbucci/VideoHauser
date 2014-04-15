@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Videucci</title>
+    <title>VideoHauser</title>
     <meta charset="utf-8" />
     
     <style type="text/css">
@@ -124,7 +124,7 @@
   <body>
     <div id="video-player-wrapper">
       <div id="video-wrapper">
-        <video id="player" src="test1.mp4" type="video/mp4" preload="none"></video>
+        <video id="player" src="{{ video_path }}" type="video/mp4" preload="none"></video>
       </div>
 
       <div id="control-wrapper">
@@ -223,6 +223,6 @@
       </div>
     </script>
     
-    <script type="text/javascript" src="videucci.js"></script>
+    <script type="text/javascript" src="/scripts/video.js"></script>
   </body>
 </html>
