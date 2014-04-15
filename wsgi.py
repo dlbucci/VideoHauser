@@ -2,7 +2,7 @@
 import os, cgi
 
 try:
-    virtenv = os.environ['OPENSHIFT_PYTHON_DIR'] + '/virtenv/'
+    virtenv = os.path.join(os.environ['OPENSHIFT_PYTHON_DIR'], 'virtenv')
     virtualenv = os.path.join(virtenv, 'bin/activate_this.py')
     execfile(virtualenv, dict(__file__=virtualenv))
 except IOError:
@@ -18,11 +18,11 @@ except:
 import subprocess
 import random
 
-from bottle import request, route, template
+from bottle import default_app, request, route, template
 
 @route("/")
 def index():
-    return template('templates/index')
+    return template('index')
 
 @route("/health")
 def health():
@@ -59,5 +59,10 @@ def upload_video():
 # Below for testing only
 #
 if __name__ == '__main__':
-    from bottle import run
+    from bottle import run, TEMPLATE_PATH
+    TEMPLATE_PATH.append("./templates/")
     run(host="localhost", port=8051)
+else:
+    from bottle import TEMPLATE_PATH
+    TEMPLATE_PATH.append(os.path.join(os.environ.get("OPENSHIFT_REPO_DIR"), "templates/"))
+    application = default_app()
