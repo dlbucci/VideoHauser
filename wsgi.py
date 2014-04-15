@@ -18,7 +18,7 @@ except:
 import subprocess
 import random
 
-from bottle import route, template
+from bottle import request, route, template
 
 @route("/")
 def index():
@@ -31,59 +31,29 @@ def health():
 @route("/env")
 def env():
     response_body = ['%s: %s' % (key, value)
-                for key, value in sorted(environ.items())]
+                for key, value in sorted(request.environ.items())]
     response_body = '\n'.join(response_body)
     return response_body
 
 @route("/upload", method="POST")
-def upload():
-    form = cgi.FieldStorage(fp=environ['wsgi.input'], environ=environ, keep_blank_values=True)
+def upload_video():
+    upload = request.files.get('video')
+    if upload == None:
+        return "None upload"
 
-    response_body = str(form)      
+    random_name = ("%032x" % random.getrandbits(128))
 
-    try:
-        fileitem = form['file']
+    name, ext = os.path.splitext(upload.filename)
+    if ext not in ('.mp4', '.mpeg4'):
+        return 'File extension not allowed.'
 
-        random_name = ("%032x" % random.getrandbits(128))
+    save_path = os.environ.get("OPENSHIFT_DATA_DIR")
+    if save_path == None:
+        save_path = 'videos'
 
-        response_body += "believed it was a file"
-        fn = os.environ['OPENSHIFT_DATA_DIR'] + random_name + ".unenc"
-        with open(fn, 'wb') as f:
-            data = fileitem.file.read(1024)
-            while data:
-                f.write(data)
-                data = fileitem.file.read(1024)
-
-        f.close()
-
-        '''try:
-            out = os.environ['OPENSHIFT_DATA_DIR'] + random_name + ".webm"
-            command = (os.environ["OPENSHIFT_BUILD_DEPENDENCIES_DIR"]+"ffmpeg -i "
-                      + fn + " -c:v libvpx -b:v 0.5M -c:a libvorbis " + out)
-            response_body += command
-            response_body += subprocess.check_call(command)
-            response_body += 'The file "' + fn + '" was uploaded successfully'
-            command = "rm " + fn
-            response_body += command
-            response_body += subprocess.check_call(command)
-
-        except subprocess.CalledProcessError, e:
-            try:
-                command = "rm "+fn
-                response_body += command
-                response_body += subprocess.check_call(command)
-            except:
-                pass
-            response_body += str(e.output)
-            repsonse_body += "Video encoding failed."
-        except Exception, e:
-            response_body += str(e)
-            response_body += "Oh no! things must have gone terribly wrong."'''
-
-    except KeyError:
-        fileitem = None
-        response_body += "Please upload a valid file"
-    return response_body
+    upload.filename = "%s.unenc" % random_name
+    upload.save(save_path) # appends upload.filename automatically
+    return "OK"
 
 #
 # Below for testing only
