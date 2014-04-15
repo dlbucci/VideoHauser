@@ -61,7 +61,7 @@ def upload_video():
 if __name__ == '__main__':
     from bottle import run, TEMPLATE_PATH
     TEMPLATE_PATH.append("./templates/")
-    run(host="localhost", port=8051)
+    run(host="localhost", port=8051, debug=True)
 else:
     from bottle import TEMPLATE_PATH
     TEMPLATE_PATH.append(os.path.join(os.environ.get("OPENSHIFT_REPO_DIR"), "templates/"))
