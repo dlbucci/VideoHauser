@@ -15,7 +15,7 @@
       
       h1.site-title {
         background: #333;
-        box-shadow: inset 0 -2px #111;
+        box-shadow: 0 2px #111;
         left: 0;
         margin: 0;
         padding: 0 .5em;
