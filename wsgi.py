@@ -1,12 +1,15 @@
 #!/usr/bin/python
 import os, cgi
 
-virtenv = os.environ['OPENSHIFT_PYTHON_DIR'] + '/virtenv/'
-virtualenv = os.path.join(virtenv, 'bin/activate_this.py')
 try:
+    virtenv = os.path.join(os.environ['OPENSHIFT_PYTHON_DIR'], 'virtenv')
+    virtualenv = os.path.join(virtenv, 'bin/activate_this.py')
     execfile(virtualenv, dict(__file__=virtualenv))
 except IOError:
     pass
+except:
+    pass
+
 #
 # IMPORTANT: Put any additional includes below this line.  If placed above this
 # line, it's possible required libraries won't be in your searchable path
@@ -15,95 +18,67 @@ except IOError:
 import subprocess
 import random
 
-def application(environ, start_response):
+from bottle import default_app, redirect, request, route, static_file, template
 
-    ctype = 'text/plain'
-    if environ['PATH_INFO'] == '/health':
-        response_body = "1"
-    elif environ['PATH_INFO'] == '/env':
-        response_body = ['%s: %s' % (key, value)
-                    for key, value in sorted(environ.items())]
-        response_body = '\n'.join(response_body)
-    elif environ['PATH_INFO'] == '/upload' and environ['REQUEST_METHOD'] == 'POST':
-      form = cgi.FieldStorage(fp=environ['wsgi.input'], environ=environ, keep_blank_values=True)
+@route("/")
+def index():
+    return template('index')
+  
+@route("/video/<id>")
+def video(id):
+    return template('video', video_path="test.mp4")
 
-      response_body = str(form)      
+@route("/health")
+def health():
+    return "1"
 
-      try:
-        fileitem = form['file']
+@route("/env")
+def env():
+    response_body = ['%s: %s' % (key, value)
+                for key, value in sorted(request.environ.items())]
+    response_body = '\n'.join(response_body)
+    return response_body
 
-        random_name = ("%032x" % random.getrandbits(128))
+@route("/upload", method="POST")
+def upload_video():
+    upload = request.files.get('video')
+    if upload == None:
+        redirect("/")
+        return "None upload"
 
-        response_body += "believed it was a file"
-        fn = os.environ['OPENSHIFT_DATA_DIR'] + random_name + ".unenc"
-        with open(fn, 'wb') as f:
-          data = fileitem.file.read(1024)
-          while data:
-            f.write(data)
-            data = fileitem.file.read(1024)
-        
-        f.close()
+    random_name = ("%032x" % random.getrandbits(128))
 
-        '''try:
-          out = os.environ['OPENSHIFT_DATA_DIR'] + random_name + ".webm"
-          command = (os.environ["OPENSHIFT_BUILD_DEPENDENCIES_DIR"]+"ffmpeg -i "
-                    + fn + " -c:v libvpx -b:v 0.5M -c:a libvorbis " + out)
-          response_body += command
-          response_body += subprocess.check_call(command)
-          response_body += 'The file "' + fn + '" was uploaded successfully'
-          command = "rm " + fn
-          response_body += command
-          response_body += subprocess.check_call(command)
+    name, ext = os.path.splitext(upload.filename)
+    if ext not in ('.mp4', '.mpeg4'):
+        return 'File extension not allowed.'
 
-        except subprocess.CalledProcessError, e:
-          try:
-            command = "rm "+fn
-            response_body += command
-            response_body += subprocess.check_call(command)
-          except:
-            pass
-          response_body += str(e.output)
-          repsonse_body += "Video encoding failed."
-        except Exception, e:
-          response_body += str(e)
-          response_body += "Oh no! things must have gone terribly wrong."'''
+    save_path = os.environ.get("OPENSHIFT_DATA_DIR")
+    if save_path == None:
+        save_path = 'videos'
 
-      except KeyError:
-        fileitem = None
-        response_body += "Please upload a valid file"
+    upload.filename = "%s.unenc" % random_name
+    upload.save(save_path) # appends upload.filename automatically
+    redirect("/video/1")
 
+#
+# this route serves static JS files
+#
+@route("/scripts/<path:path>")
+def callback(path):
+    repo_dir = os.environ.get("OPENSHIFT_REPO_DIR")
+    if (repo_dir):
+        return static_file(path, root=os.path.join(repo_dir, "scripts"))
     else:
-        ctype = 'text/html'
-        response_body = '''<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>Welcome to VideoHauser</title>
-</head>
-<body>
-Welcome to Video-Hauser
-<form action="upload" method="post"
-enctype="multipart/form-data">
-<label for="file">Video to upload:</label>
-<input type="file" name="file" id="file"><br>
-<input type="submit" name="submit" value="Submit">
-</form>
-</body>
-</html>'''
-        
-
-    status = '200 OK'
-    response_headers = [('Content-Type', ctype), ('Content-Length', str(len(response_body)))]
-    #
-    start_response(status, response_headers)
-    return [response_body]
-
+        return static_file(path, root="./scripts")
+    
 #
 # Below for testing only
 #
 if __name__ == '__main__':
-    from wsgiref.simple_server import make_server
-    httpd = make_server('localhost', 8051, application)
-    # Wait for a single request, serve it and quit.
-    httpd.handle_request()
+    from bottle import run, TEMPLATE_PATH
+    TEMPLATE_PATH.append("./templates/")
+    run(host="localhost", port=8051, debug=True)
+else:
+    from bottle import TEMPLATE_PATH
+    TEMPLATE_PATH.append(os.path.join(os.environ.get("OPENSHIFT_REPO_DIR"), "templates/"))
+    application = default_app()
