@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import os, cgi
+from convert import webm
 
 try:
     virtenv = os.path.join(os.environ['OPENSHIFT_PYTHON_DIR'], 'virtenv')
@@ -26,7 +27,7 @@ def index():
   
 @route("/video/<id>")
 def video(id):
-    url = "/media/%s.mp4" % str(id)
+    url = "/media/%s.webm" % str(id)
     return template('video', video_path=url)
 
 @route("/health")
@@ -59,6 +60,7 @@ def upload_video():
 
     upload.filename = "%s.mp4" % random_name
     upload.save(save_path) # appends upload.filename automatically
+    webm(save_path + upload.filename)
     url = "/video/%s" % random_name
     redirect(url)
 

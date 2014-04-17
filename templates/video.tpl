@@ -124,7 +124,7 @@
   <body>
     <div id="video-player-wrapper">
       <div id="video-wrapper">
-        <video id="player" src="{{ video_path }}" type="video/mp4" preload="none"></video>
+        <video id="player" src="{{ video_path }}" type="video/webm" preload="none"></video>
       </div>
 
       <div id="control-wrapper">
