@@ -54,11 +54,11 @@ def upload_video():
 
     save_path = os.environ.get("OPENSHIFT_DATA_DIR")
     if save_path == None:
-        save_path = './videos/'
+        save_path = './videos'
 
     upload.filename = "%s.mp4" % random_name
     upload.save(save_path) # appends upload.filename automatically
-    webm(save_path + upload.filename)
+    webm(os.path.join(save_path, upload.filename))
     url = "/video/%s" % random_name
     redirect(url)
 

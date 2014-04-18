@@ -17,7 +17,8 @@
       }
       
       #video-wrapper {
-        bottom: 28px;
+        /** set this to 28px for an always-on control bar **/
+        bottom: 0px;
         left: 0;
         position: fixed;
         top: 0;
@@ -39,7 +40,8 @@
       
       #control-wrapper {
         background: #f90;
-        bottom: -0px;
+        /** set this to 0 for an always-on control bar **/
+        bottom: -28px;
         height: 28px;
         left: 0;
         padding: 0;
