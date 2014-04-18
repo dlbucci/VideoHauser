@@ -1,5 +1,15 @@
 (function (doc) {
-
+"use strict";
+  
+/**
+ * this alerts us to errors so we can more easily debug.
+ * Don't put this in production
+ **
+window.onerror = function (msg, url, lineNumber) {
+  alert("JS Error on Line "+lineNumber+": "+msg);
+}
+//*/
+  
 /** Load the player and the actual video element **/
 var player = doc.getElementById("video-player-wrapper"),
     video = doc.getElementById("player"),
@@ -58,12 +68,33 @@ function MuteButton(e) {
  * @param  e  the event passed to the click handler
  **/
 function SizeButton(e) {
-  if (!doc.mozFullScreenElement) {
+  if (!document.fullscreenElement &&
+      !document.mozFullScreenElement && 
+      !document.webkitFullscreenElement && 
+      !document.msFullscreenElement ) {
+    if (player.requestFullscreen) {
+      player.requestFullscreen();
+    } else if (player.msRequestFullscreen) {
+      player.msRequestFullscreen();
+    } else if (player.mozRequestFullScreen) {
+      player.mozRequestFullScreen();
+    } else if (player.webkitRequestFullscreen) {
+      player.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+    } else {
+      return false;
+    }
     size_button.innerHTML = collapse_svg_html;
-    player.mozRequestFullScreen();
   } else {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.msExitFullscreen) {
+      document.msExitFullscreen();
+    } else if (document.mozCancelFullScreen) {
+      document.mozCancelFullScreen();
+    } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen();
+    }
     size_button.innerHTML = expand_svg_html;
-    doc.mozCancelFullScreen();
   }
 }
 

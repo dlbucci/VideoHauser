@@ -3,6 +3,7 @@
   <head>
     <title>VideoHauser</title>
     <meta charset="utf-8" />
+    <link rel="icon" type="image/png" href="/favicon.png">
     
     <style type="text/css">
       * {

@@ -80,6 +80,14 @@ def callback(path):
         return static_file(path, root=os.path.join(repo_dir, "videos"), mimetype="video/webm")
     else:
         return static_file(path, root="./videos", mimetype="video/webm")
+      
+@route("/favicon.png")
+def callback():
+    repo_dir = os.environ.get("OPENSHIFT_REPO_DIR")
+    if (repo_dir):
+        return static_file("favicon.png", root=repo_dir)
+    else:
+        return static_file("favicon.png", root="./")
     
 #
 # Below for testing only
