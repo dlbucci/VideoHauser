@@ -10,6 +10,7 @@ var player = doc.getElementById("video-player-wrapper"),
     size_button = doc.getElementById("size-button"),
     load_bar = doc.getElementById("load-bar"),
     time_bar = doc.getElementById("time-bar"),
+    time_seeker = doc.getElementById("time-bar-seeker"),
     time_text = doc.getElementById("time-text"),
     
 /** Load SVG for player icons **/
@@ -74,7 +75,7 @@ function SizeButton(e) {
 function onProgress(e) {
   var end = video.buffered.end(0),
       start = video.buffered.start(0);
-  load_bar.setAttribute("width", ((end - start) / video.duration).toString());
+  load_bar.setAttribute("width", Math.ceil((end - start) / video.duration * 100).toString());
 }
 
 /**
@@ -106,8 +107,7 @@ function onTimeUpdate(e) {
   if (newTime != timeInt) {
     timeInt = newTime;
     time_str = toTimeString(timeInt);
-    time_text.innerHTML = time_str + dur_str;
-    time_bar.setAttribute("width", (video.currentTime / video.duration).toString());
+    updateTimeBar();
   }
 }
 
@@ -122,8 +122,7 @@ function onDurationChange(e) {
   if (newDuration != durInt) {
     durInt = newDuration;
     dur_str = " / " + toTimeString(durInt);
-    time_text.innerHTML = time_str + dur_str;
-    time_bar.setAttribute("width", (video.currentTime / video.duration).toString());
+    updateTimeBar();
   }
 }
   
@@ -132,7 +131,15 @@ function onDurationChange(e) {
  **/
 function onEnded(e) {
   play_button.innerHTML = play_svg_html;
-  time_bar.setAttribute("width", "1");
+  time_bar.setAttribute("width", "100");
+  time_seeker.style.left = "100%";
+}
+  
+function updateTimeBar() {
+  var percent = Math.ceil(video.currentTime / video.duration * 100).toString();
+  time_text.innerHTML = time_str + dur_str;
+  time_bar.setAttribute("width", percent);
+  time_seeker.style.left = percent + "%";
 }
 
 /** Initialize the time stuff **/

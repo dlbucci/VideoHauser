@@ -4,3 +4,4 @@
 .DS_STORE
 videos/*.mp4
 videos/*.mpeg4
+videos/*.webm

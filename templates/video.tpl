@@ -37,7 +37,7 @@
       }
       
       #control-wrapper {
-        background: linear-gradient(to top, #c60, #f90);
+        background: #f90;
         bottom: -0px;
         height: 28px;
         left: 0;
@@ -91,17 +91,28 @@
       }
       
       #time-bar-wrapper {
-        background: none;
-        border: none;
+        background: #c60;
+        border: 10px solid #f90;
         display: block;
         float: left;
         margin: 0;
-        padding: 10px;
+        padding: 0;
         position: absolute;
         left: 56px;
         right: 140px;
         top: 0;
-        height: 28px;
+        height: 8px;
+      }
+      #time-bar-seeker {
+        height: 12px;
+        left: 0;
+        margin: -2px 0 0 -6px;
+        position: absolute;
+        top: 0;
+        width: 12px;
+      }
+      #time-bar-seeker > svg {
+        overflow: visible;
       }
       
       #time-text {
@@ -146,11 +157,15 @@
         </button>
 
         <div id="time-bar-wrapper">
-          <svg width="100%" height="8px" viewBox="0 0 1 1" preserveAspectRatio="none">
-            <rect id="base-bar" x="0" y="0" width="1" height="1" fill="#666666"></rect>
-            <rect id="load-bar" x="0" y="0" width="0" height="1" fill="#333333"></rect>
+          <svg width="100%" height="100%" viewBox="0 0 100 1" preserveAspectRatio="none">
+            <rect id="load-bar" x="0" y="0" width="0" height="1" fill="#666666"></rect>
             <rect id="time-bar" x="0" y="0" width="0" height="1" fill="#000000"></rect>
           </svg>
+          <div id="time-bar-seeker">
+            <svg width="100%" height="100%" viewBox="0 0 6 6">
+              <circle cx="3" cy="3" r="3" fill="#f90" stroke="#fff" stroke-width="1"></circle>
+            </svg>
+          </div>
         </div>
 
         <div id="time-text">0:00 / 0:00</div>

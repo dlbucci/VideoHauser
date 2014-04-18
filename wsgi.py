@@ -51,12 +51,10 @@ def upload_video():
     random_name = ("%032x" % random.getrandbits(128))
 
     name, ext = os.path.splitext(upload.filename)
-    if ext not in ('.mp4', '.mpeg4'):
-        return 'File extension not allowed.'
 
     save_path = os.environ.get("OPENSHIFT_DATA_DIR")
     if save_path == None:
-        save_path = 'videos/'
+        save_path = './videos/'
 
     upload.filename = "%s.mp4" % random_name
     upload.save(save_path) # appends upload.filename automatically
@@ -79,9 +77,9 @@ def callback(path):
 def callback(path):
     repo_dir = os.environ.get("OPENSHIFT_REPO_DIR")
     if (repo_dir):
-        return static_file(path, root=os.path.join(repo_dir, "videos"), mimetype='video/mp4')
+        return static_file(path, root=os.path.join(repo_dir, "videos"), mimetype="video/webm")
     else:
-        return static_file(path, root="./videos")
+        return static_file(path, root="./videos", mimetype="video/webm")
     
 #
 # Below for testing only

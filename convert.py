@@ -11,8 +11,8 @@ def webm(file_name):
   '-ac','2',
   '-ab','96k',
   '-ar','44100',
-  '-b','345k',
-  '-s','360x640',
+  '-b:v','345k',
+  '-s','640x360',
   '%s' % webm_extension(file_name)]
 
   print(' '.join(cmd))
