@@ -1,11 +1,18 @@
 #!/usr/bin/env python
-import subprocess
+import os, subprocess
 
 def webm_extension(file_name):
   return '%s.webm' % '.'.join(file_name.split('.')[:-1])
 
 def webm(file_name):
-  cmd = ['ffmpeg',
+  cmd0 = os.environ.get('OPENSHIFT_BUILD_DEPENDENCIES_DIR')
+  if (cmd0):
+    cmd0 = os.path.join(cmd0, 'ffmpeg')
+  else:
+    cmd0 = 'ffmpeg'
+    
+  print cmd0
+  cmd = [cmd0,
   '-i','%s' % file_name,
   '-acodec','libvorbis',
   '-ac','2',

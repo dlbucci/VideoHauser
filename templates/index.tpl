@@ -4,7 +4,9 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <link rel="icon" type="image/png" href="/favicon.png">
+    
     <title>Welcome to VideoHauser</title>
+    
     <style>
       body {
         background: #333;
@@ -58,21 +60,24 @@
         padding: 0;
         text-align: center;
       }
+      input[type="file"], input[type="submit"], input[type="text"] {
+        box-sizing: border-box;
+        display: block;
+        margin: 10px 0;
+        width: 100%;
+      }
+      #email {
+        color: #333;
+      }
       #file {
         background: #555;
         border-radius: 2px;
         box-shadow: inset 0 2px #444,
                     inset 0 -2px #666;
-        box-sizing: border-box;
-        margin: 10px 0;
         padding: 5px;
       }
       #submit {
-        margin: 10px 0 0;
-      }
-      input[type="file"], input[type="submit"] {
-        display: block;
-        width: 100%;
+        margin-bottom: 0;
       }
       
       footer {
@@ -88,6 +93,7 @@
       }
     </style>
   </head>
+  
   <body>
     <h1 class="site-title">
       <div class="svg-wrapper">
@@ -112,13 +118,31 @@
       </div>
       <span class="video">Video</span><span class="hauser">Hauser</span>
     </h1>
+    
+    <script type="text/javascript">
+      /** 
+       * this function asks the user to not navigate away from the page
+       * while the file is being uploaded
+       **/
+      function dontLeave() {
+        addEventListener("beforeunload", function(e) {
+            var confirmationMessage = ' ';
+            (e || window.event).returnValue = confirmationMessage;
+            return confirmationMessage;
+        });
+        return true;
+      }
+    </script>
+    
     <form action="upload" method="post" enctype="multipart/form-data">
       <div class="upload-form">
         <h2 class="upload-form-title">Upload Your Video</h2>
-        <input type="file" name="video" id="file">
-        <input type="submit" name="submit" id="submit" value="Submit">
+        <input type="text" name="email" id="email" placeholder="Email Address (Optional)" />
+        <input type="file" name="video" id="file" />
+        <input type="submit" name="submit" id="submit" value="Submit" />
       </div>
     </form>
+    
     <footer><p class="footer-text">Copyright Team Pelicans 2014.</p></footer>
   </body>
 </html>

@@ -75,9 +75,9 @@ def callback(path):
 
 @route("/media/<path:path>")
 def callback(path):
-    repo_dir = os.environ.get("OPENSHIFT_REPO_DIR")
-    if (repo_dir):
-        return static_file(path, root=os.path.join(repo_dir, "videos"), mimetype="video/webm")
+    data_dir = os.environ.get("OPENSHIFT_DATA_DIR")
+    if (data_dir):
+        return static_file(path, root=data_dir, mimetype="video/webm")
     else:
         return static_file(path, root="./videos", mimetype="video/webm")
       
