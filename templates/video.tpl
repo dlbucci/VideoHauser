@@ -18,7 +18,7 @@
       
       #video-wrapper {
         /** set this to 28px for an always-on control bar **/
-        bottom: 0px;
+        bottom: 28px;
         left: 0;
         position: fixed;
         top: 0;
@@ -41,7 +41,7 @@
       #control-wrapper {
         background: #f90;
         /** set this to 0 for an always-on control bar **/
-        bottom: -28px;
+        bottom: 0px;
         height: 28px;
         left: 0;
         padding: 0;
@@ -154,7 +154,9 @@
           <div class="button-svg-wrapper">
             <svg width="100%" height="100%" viewBox="0 0 14 14">
               <polygon points="2,5 7,5 7,9 2,9" fill="#000000" />
-              <path d="M 5 7 L 10 2 L 10 12 L 5 7 z" fill="#000000" />
+              <path d="M 5 7 L 10 2
+                       A 7 7, 90, 0, 1, 10 12
+                       L 5 7 z" fill="#000000" />
             </svg>
           </div>
         </button>
@@ -205,7 +207,9 @@
       <div class="button-svg-wrapper">
         <svg width="100%" height="100%" viewBox="0 0 14 14">
           <polygon points="2,5 7,5 7,9 2,9" fill="#000000" />
-          <path d="M 5 7 L 10 2 L 10 12 L 5 7 z" fill="#000000" />
+          <path d="M 5 7 L 10 2
+                   A 7 7, 90, 0, 1, 10 12
+                   L 5 7 z" fill="#000000" />
         </svg>
       </div>
     </script>
@@ -214,7 +218,9 @@
       <div class="button-svg-wrapper">
         <svg width="100%" height="100%" viewBox="0 0 14 14">
           <polygon points="2,5 7,5 7,9 2,9" fill="#000000" />
-          <path d="M 5 7 L 10 2 L 10 12 L 5 7 z" fill="#000000" />
+          <path d="M 5 7 L 10 2
+                   A 7 7, 90, 0, 1, 10 12
+                   L 5 7 z" fill="#000000" />
           <polygon points="2,4 4,2 12,10 10,12" fill="#ff0000" />
           <polygon points="2,10 10,2 12,4 4,12" fill="#ff0000" />
         </svg>
