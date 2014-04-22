@@ -52,13 +52,20 @@ def upload_video():
 
     name, ext = os.path.splitext(upload.filename)
 
+    tmp_path = os.environ.get("OPENSHIFT_TMP_DIR")
+    if tmp_path == None:
+        tmp_path = './videos'
+    
     save_path = os.environ.get("OPENSHIFT_DATA_DIR")
     if save_path == None:
         save_path = './videos'
 
-    upload.filename = "%s.mp4" % random_name
-    upload.save(save_path) # appends upload.filename automatically
-    webm(os.path.join(save_path, upload.filename))
+    upload.filename = "%s%s" % (random_name, ext)
+    upload.save(tmp_path) # appends upload.filename automatically
+    
+    # this function will remove the temporary video file
+    webm(tmp_path, save_path, upload.filename)
+    
     url = "/video/%s" % random_name
     redirect(url)
 
