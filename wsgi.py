@@ -85,10 +85,18 @@ def callback(path):
 def callback():
     repo_dir = os.environ.get("OPENSHIFT_REPO_DIR")
     if (repo_dir):
-        return static_file("favicon.png", root=repo_dir)
+        return static_file("favicon.png", root=os.path.join(repo_dir, "static"))
     else:
-        return static_file("favicon.png", root="./")
-    
+        return static_file("favicon.png", root="./static")
+  
+@route("/robots.txt")
+def callback():
+    repo_dir = os.environ.get("OPENSHIFT_REPO_DIR")
+    if (repo_dir):
+        return static_file("robots.txt", root=os.path.join(repo_dir, "static"))
+    else:
+        return static_file("robots.txt", root="./static")
+
 #
 # Below for testing only
 #
