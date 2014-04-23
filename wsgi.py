@@ -28,7 +28,8 @@ def index():
 @route("/video/<id>")
 def video(id):
     url = "/media/%s.webm" % str(id)
-    return template('video', video_path=url)
+    embed_url = "http://videohauser-dlbucci.rhcloud.com/video/%s" % id
+    return template('video', video_path=url, embed_path=embed_url)
 
 @route("/health")
 def health():

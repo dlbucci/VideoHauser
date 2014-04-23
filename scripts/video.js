@@ -18,6 +18,9 @@ var player = doc.getElementById("video-player-wrapper"),
     play_button = doc.getElementById("play-button"),
     mute_button = doc.getElementById("sound-button"),
     size_button = doc.getElementById("size-button"),
+    embed_button = doc.getElementById("embed-button"),
+    embed_popup = doc.getElementById("embed-popup"),
+    time_bar_wrapper = doc.getElementById("time-bar-wrapper"),
     load_bar = doc.getElementById("load-bar"),
     time_bar = doc.getElementById("time-bar"),
     time_seeker = doc.getElementById("time-bar-seeker"),
@@ -60,6 +63,20 @@ function MuteButton(e) {
     video.muted = true;
   }
 }
+ 
+/**
+ * called when the time bar is clicked.  Seeks the position in the video.
+ *
+ * @param  e  the event passed to the handler
+ */
+function TimeBar(e) {
+  var BORDER_OFFSET = 10;
+  var x = ((e.offsetX !== undefined)? e.offsetX : e.layerX) - BORDER_OFFSET,
+      width = time_bar_wrapper.offsetWidth - 2 * BORDER_OFFSET;
+  if (x < 0 || x >= width)
+    return false;
+  video.currentTime = x / width * video.duration;
+}
   
 /**
  * called when the size button is clicked.  Either enters or exits full screen.
@@ -97,6 +114,13 @@ function SizeButton(e) {
     size_button.innerHTML = expand_svg_html;
   }
 }
+  
+function EmbedButton(e) {
+  if (window.getComputedStyle(embed_popup).getPropertyValue("display") === "none")
+    embed_popup.style.display = "block";
+  else
+    embed_popup.style.display = "none";
+}
 
 /**
  * called when progress is made loading the video.
@@ -104,9 +128,12 @@ function SizeButton(e) {
  * param  e  the event passed to the handler
  **/
 function onProgress(e) {
-  var end = video.buffered.end(0),
-      start = video.buffered.start(0);
-  load_bar.setAttribute("width", Math.ceil((end - start) / video.duration * 100).toString());
+  if (video.buffered.length > 0)
+  {
+    var end = video.buffered.end(0),
+        start = video.buffered.start(0);
+    load_bar.setAttribute("width", Math.ceil((end - start) / video.duration * 100).toString());
+  }
 }
 
 /**
@@ -177,12 +204,14 @@ function updateTimeBar() {
 var timeInt = Math.floor(video.currentTime),
     durInt = Math.floor(video.duration),
     time_str = toTimeString(video.currentTime), 
-    dur_str = toTimeString(video.duration);
+    dur_str = " / " + toTimeString(video.duration);
 
 /**  Add the button event listeners **/
 play_button.addEventListener("click", PlayButton, false);
 mute_button.addEventListener("click", MuteButton, false);
 size_button.addEventListener("click", SizeButton, false);
+time_bar_wrapper.addEventListener("mousedown", TimeBar, false);
+embed_button.addEventListener("click", EmbedButton, false);
   
 /**  Add the video event listeners **/
 video.addEventListener("progress", onProgress, false);
