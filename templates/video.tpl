@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>VideoHauser</title>
     <meta charset="utf-8" />
+    <title>VideoHauser</title>
     <link rel="icon" type="image/png" href="/favicon.png">
     
     <style type="text/css">
       * {
-        display: block;
         margin: 0;
         padding: 0;
       }
@@ -101,6 +100,10 @@
         z-index: 20;
       }
       
+      code, svg {
+        display: block;
+      }
+      
       #play-button {
         left: 0;
       }
@@ -122,6 +125,7 @@
         top: 0;
       }
       #time-bar-seeker {
+        display: block;
         height: 12px;
         left: 0;
         margin: -2px 0 0 -6px;
@@ -242,7 +246,7 @@
         </button>
         
         <div id="embed-popup" class="control-element">
-          <code id="embed-code">&lt;iframe href="{{ embed_path }}" allowfullscreen&gt;&lt;/iframe&gt;</code>
+          <code id="embed-code">&lt;iframe src="{{ embed_path }}" allowfullscreen width="640" height="388" &gt;&lt;/iframe&gt;</code>
         </div>
         
         <div id="site-link" class="control-element">
