@@ -19,7 +19,8 @@
       
       h1.site-title {
         background: #f90;
-        box-shadow: 0 2px #c60;
+        box-shadow: #c60 0 2px,
+                    #000 0 3px 2px;
         height: 42px;
         left: 0;
         line-height: 42px;
@@ -28,6 +29,15 @@
         position: fixed;
         right: 0;
         top: 0;
+      }
+      h2.site-help {
+        color: #666;
+        left: 0;
+        margin: .2em;
+        position: fixed;
+        right: 0;
+        text-shadow: #000 0 1px 1px;
+        top: 44px;
       }
       .svg-wrapper {
         height: 42px;
@@ -50,7 +60,8 @@
         background: #f90;
         border-radius: 4px;
         box-shadow: inset 0 2px #fc3,
-                    inset 0 -2px #c60;
+                    inset 0 -2px #c60,
+                    #000 0 1px 2px;
         color: #fff;
         margin: 200px auto 0;
         padding: 10px;
@@ -119,6 +130,13 @@
       </div>
       <span class="video">Video</span><span class="hauser">Hauser</span>
     </h1>
+    
+    <h2 class="site-help">
+      Welcome to VideoHauser, the anonymous video sharing site.<br/>
+      Simply choose a video to upload and wait.<br/>
+      If you provide an email, we'll send you the URL, too.<br/>
+      But we'll never keep your information.<br/>
+    </h2>
     
     <script type="text/javascript">
       /** 
