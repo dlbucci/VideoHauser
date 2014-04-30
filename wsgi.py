@@ -2,6 +2,9 @@
 import os, cgi
 from convert import webm
 
+# for email
+import requests
+
 try:
     virtenv = os.path.join(os.environ['OPENSHIFT_PYTHON_DIR'], 'virtenv')
     virtualenv = os.path.join(virtenv, 'bin/activate_this.py')
@@ -44,13 +47,15 @@ def env():
 
 @route("/upload", method="POST")
 def upload_video():
-    upload = request.files.get('video')
+    upload = request.files.get("video")
     if upload == None:
         redirect("/")
         return "None upload"
 
     random_name = ("%032x" % random.getrandbits(128))
 
+    url = "/video/%s" % random_name
+    
     name, ext = os.path.splitext(upload.filename)
 
     tmp_path = os.environ.get("OPENSHIFT_TMP_DIR")
@@ -68,6 +73,19 @@ def upload_video():
     webm(tmp_path, save_path, upload.filename)
     
     url = "/video/%s" % random_name
+    
+    # email the user with MailGun
+    email = request.forms.get("email")
+    if email:
+        requests.post(
+        "https://api.mailgun.net/v2/sandbox5fb6324798bc485184c48929dd535e92.mailgun.org/messages",
+        auth=("api", "key-5pz3ehury2wexf8tubtmdurs4cvesur3"),
+        data={"from": "Willy 'Video' Hauser <noreply@ssandbox5fb6324798bc485184c48929dd535e92.mailgun.org>",
+              "to": [email],
+              "subject": "Your New VideoHauser Link",
+              "text": """\
+Your video is now accessible at: http://dlbucci-videohauser.rhcloud.com%s""" % url})
+    
     redirect(url)
 
 #

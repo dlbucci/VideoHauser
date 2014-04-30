@@ -14,6 +14,7 @@
         font-weight: bold;
         margin: 0;
         padding: 0;
+        text-shadow: #666 0 1px 1px;
       }
       
       h1.site-title {
