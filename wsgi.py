@@ -84,7 +84,7 @@ def upload_video():
               "to": [email],
               "subject": "Your New VideoHauser Link",
               "text": """\
-Your video is now accessible at: http://dlbucci-videohauser.rhcloud.com%s""" % url})
+Your video is now accessible at: http://videohauser-dlbucci.rhcloud.com%s""" % url})
     
     redirect(url)
 
